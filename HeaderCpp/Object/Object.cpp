@@ -1,6 +1,7 @@
 #include <HeaderCpp/Object/Object.h>
 
 
+
 Object::Object(Vector2 objectPosition) {
 	this->objectPosition_ = objectPosition;
 
@@ -15,6 +16,10 @@ Object::~Object() {
 }
 
 void Object::Update() {
+
+
+
+
 
 }
 

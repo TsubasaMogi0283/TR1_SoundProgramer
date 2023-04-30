@@ -47,6 +47,9 @@
     <ClCompile Include="HeaderCpp\Transparency\Transparency.cpp">
       <Filter>KamataEngine\Source</Filter>
     </ClCompile>
+    <ClCompile Include="HeaderCpp\Object\Field\Field.cpp">
+      <Filter>KamataEngine\Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="C:\KamataEngine\DirectXGame\audio\Audio.h">
@@ -133,6 +136,9 @@
       <Filter>KamataEngine\Include</Filter>
     </ClInclude>
     <ClInclude Include="HeaderCpp\Scene\Scene.h">
+      <Filter>KamataEngine\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="HeaderCpp\Object\Field\Field.h">
       <Filter>KamataEngine\Include</Filter>
     </ClInclude>
   </ItemGroup>

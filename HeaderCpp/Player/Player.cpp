@@ -13,6 +13,7 @@ Player::Player(Vector2 playerPosition, Vector2 playerSpeed, Vector2 playerRadius
 	this->playerRadius_.x = playerRadius.x;
 	this->playerRadius_.y = playerRadius.y;
 
+	this->isWalking_ = false;
 	this->walkingDirection_ = None;
 
 }

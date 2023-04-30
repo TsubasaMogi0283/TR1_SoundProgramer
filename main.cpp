@@ -23,7 +23,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	char keys[256] = {0};
 	char preKeys[256] = {0};
 
-	////Resource
+#pragma region Resouece(Texture)
 	//Texture 
 	//フィールドのテクスチャ
 	//4枚用意して大きいマップにする
@@ -36,7 +36,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	int playerTextureChangeTime = 0;
 	int playerTextureHandleAll = 0;
 	unsigned int playerTransparency = Transparency100;
-	
+
 	//前
 	int playerFrontTexture[2] = { 0 };
 	playerFrontTexture[0] = Novice::LoadTexture("./Resources/Player/Front/Front0.png");
@@ -54,14 +54,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	playerRightTexture[0] = Novice::LoadTexture("./Resources/Player/Right/Right0.png");
 	playerRightTexture[1] = Novice::LoadTexture("./Resources/Player/Right/Right1.png");
 
+#pragma endregion
 
-
-
-
+#pragma region Resource(Music)
 	//Music,SE
 	int walkingSEHandle = 0;
 	int walkingSE = Novice::LoadAudio("./Resources/Music/SE/Action/Walk.wav");
 
+#pragma endregion
 
 
 	////Coodinate
@@ -91,7 +91,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 	//Player
-	Player* player1 = new Player({0,0 },{ PlayerSpeed.x,PlayerSpeed .y}, { PlayerRadius.x,PlayerRadius.y });
+	Player* player1 = new Player({ PlayerPosition.x,PlayerPosition.y },{ PlayerSpeed.x,PlayerSpeed .y}, { PlayerRadius.x,PlayerRadius.y });
 
 
 
