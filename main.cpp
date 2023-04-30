@@ -64,9 +64,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 
-
-
-
 	////Coodinate
 	int fieldTransparency = Transparency100;
 
