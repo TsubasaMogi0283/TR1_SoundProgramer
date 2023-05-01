@@ -12,7 +12,28 @@ public:
 
 	void Draw(int textureHandle, unsigned int objectColour);
 
-private:
 
+	int GetFieldDirection() {
+		return fieldDirection_;
+	}
+
+	Vector2 GetFieldPosition() {
+		return objectPosition_;
+	}
+
+	Vector2 GetFieldScrollSpeed() {
+		return objectSpeed_;
+	}
+
+
+
+	void SetFieldPosition(float fieldPositionX, float fieldPositionY);
+
+	void SetFieldDirection(int fieldDirection);
+
+	void SetFieldScrollSpeed(float scrollSpeedX, float scrollSpeedY);
+
+private:
+	int fieldDirection_;
 
 };

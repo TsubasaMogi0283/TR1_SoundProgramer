@@ -69,7 +69,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	int fieldTransparency = Transparency100;
 
 
-	//Playerの位置
+	//Player(64x64)の位置
 	Vector2 PlayerPosition = { 100.0f,200.0f };
 	Vector2 PlayerSpeed = { 3.0f,3.0f };
 	Vector2 PlayerRadius = { 32.0f,32.0f };
@@ -94,8 +94,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//Player
 	Player* player1 = new Player({ PlayerPosition.x,PlayerPosition.y }, { PlayerSpeed.x,PlayerSpeed.y }, { PlayerRadius.x,PlayerRadius.y });
 
-
-
+	
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
 		// フレームの開始
@@ -116,37 +115,56 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			case Displaying:
 
 
+				//十字キーで移動
 				player1->UpDate(keys);
 
 
-
+				//歩く時のSEが鳴る
 				if (player1->GetPlayerIsWalking() == true) {
 					if (Novice::IsPlayingAudio(walkingSEHandle) == 0 || walkingSEHandle == -1) {
 						walkingSEHandle = Novice::PlayAudio(walkingSE, 1, 0.3f);
 					}
 				}
-
+				//何も操作していない時は鳴らない
 				if (player1->GetPlayerIsWalking() == false) {
 					
 					Novice::StopAudio(walkingSEHandle);
 				}
 
 				
+				
+
+				
+
+				//プレイヤーの中心の位置
+				player1->SetPlayerCenterPosition(
+					player1->GetPlayerPosition().x + player1->GetPlayerRadius().x,
+					player1->GetPlayerPosition().y + player1->GetPlayerRadius().y);
 
 
-
-
-				WorldCoodinate.x = player1->GetPlayerPosition().x + ScrollSpeed.x;
-				WorldCoodinate.y = player1->GetPlayerPosition().y + ScrollSpeed.y;
-
+				FieldInstance[0]->Update();
 
 				//フィールドが移動
-				if (player1->GetPlayerPosition().x > WINDOW_SIZE_WIDTH) {
-					ScrollSpeed.x = 3;
+				if (player1->GetPlayerDirection() == None) {
+					FieldInstance[0]->SetFieldScrollSpeed(0.0f, 0.0f);
+				}
+				 
+				//プレイヤーが右に移動したとき
+				if (player1->GetPlayerDirection() == Right) {
+					if (WorldCoodinate.x >= WINDOW_SIZE_WIDTH / 2.0f &&
+						WorldCoodinate.x <= WINDOW_SIZE_WIDTH + (WINDOW_SIZE_WIDTH / 2.0f)) {
+						FieldInstance[0]->SetFieldScrollSpeed(-3.0f, 0.0f);
+						player1->SetPlayerSpeed(0.0f, 0.0f);
+						
+
+					}
 				}
 
+				
+				
 
-
+				WorldCoodinate.x = player1->GetPlayerPosition().x + -(FieldInstance[0]->GetFieldScrollSpeed().x);
+				WorldCoodinate.y = player1->GetPlayerPosition().y + -(FieldInstance[0]->GetFieldScrollSpeed().y);
 
 
 				break;
@@ -265,7 +283,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 				Novice::ScreenPrintf(0, 0, "World[%f][%f]", WorldCoodinate.x, WorldCoodinate.y);
 				Novice::ScreenPrintf(0, 15, "Player[%f][%f]", player1->GetPlayerPosition().x, player1->GetPlayerPosition().y);
+				Novice::ScreenPrintf(0, 30, "PlayerCenter[%f][%f]", player1->GetPlayerCenterPosition().x, player1->GetPlayerCenterPosition().y);
+				Novice::ScreenPrintf(0, 45, "PlayerDirection[%d]", player1->GetPlayerDirection());
 
+				//None, 0
+				//Front,1
+				//Back, 2
+				//Right,3
+				//Left, 4
 
 
 				break;
@@ -307,5 +332,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	}
 	// ライブラリの終了
 	Novice::Finalize();
+	
 	return 0;
 }

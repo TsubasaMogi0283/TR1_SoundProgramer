@@ -63,7 +63,19 @@ void Player::UpDate(char* keys ) {
 	}
 
 
+	if (playerPosition_.x < 0) {
+		playerPosition_.x = 0;
+	}
+	if (playerPosition_.y < 0) {
+		playerPosition_.y = 0;
+	}
 
+	if (playerCenterPosition_.x > WINDOW_SIZE_WIDTH - playerRadius_.x) {
+		playerCenterPosition_.x = WINDOW_SIZE_WIDTH - playerRadius_.x;
+	}
+	if (playerCenterPosition_.y < WINDOW_SIZE_HEIGHT - playerRadius_.y) {
+		playerCenterPosition_.y = WINDOW_SIZE_HEIGHT - playerRadius_.y;
+	}
 
 	
 
@@ -81,6 +93,11 @@ void Player::SetPlayerPosition(float playerPositionX, float playerPositionY) {
 	this->playerPosition_.x = playerPositionX;
 	this->playerPosition_.y = playerPositionY;
 
+}
+
+void Player::SetPlayerCenterPosition(float playerCenterPositionX, float playerCenterPositionY) {
+	this->playerCenterPosition_.x = playerCenterPositionX;
+	this->playerCenterPosition_.y = playerCenterPositionY;
 }
 
 void Player::SetPlayerSpeed(float playerSpeedX, float playerSpeedY) {

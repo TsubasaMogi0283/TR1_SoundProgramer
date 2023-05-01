@@ -24,4 +24,13 @@ enum PlayerDirection {
 	Right,
 	Left,
 };
+
+enum FieldDirection {
+	FieldNone,
+	FieldFront,
+	FieldBack,
+	FieldRight,
+	FieldLeft,
+};
+
 	

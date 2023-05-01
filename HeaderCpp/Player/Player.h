@@ -20,9 +20,20 @@ public:
 	Vector2 GetPlayerPosition() {
 		return playerPosition_;
 	};
+	Vector2 GetPlayerCenterPosition() {
+		return playerCenterPosition_;
+	}
+	Vector2 GetPlayerRadius() {
+		return playerRadius_;
+	}
+
 	Vector2 GetPlayerSpeed() {
 		return playerSpeed_;
 	}
+	
+
+
+
 
 	int GetPlayerDirection() {
 		return walkingDirection_;
@@ -32,9 +43,11 @@ public:
 		return isWalking_;
 	}
 
-	void SetPlayerPosition(float x, float y);
+	void SetPlayerPosition(float playerPositionX, float playerPositionY);
 
-	void SetPlayerSpeed(float x, float y);
+	void SetPlayerCenterPosition(float playerCenterPositionX, float playerCenterPositionY);
+
+	void SetPlayerSpeed(float playerSpeedX, float playerSpeedY);
 
 
 
