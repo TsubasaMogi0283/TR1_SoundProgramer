@@ -77,6 +77,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	//World座標
 	Vector2 WorldCoodinate = { 0.0f,0.0f };
+	Vector2 WorldScrollAmount = { 0.0f,0.0f };
 	Vector2 ScrollSpeed = { 0.0f,0.0f };
 
 
@@ -118,6 +119,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				//十字キーで移動
 				player1->UpDate(keys);
 
+				FieldInstance[0]->Update();
 
 				//歩く時のSEが鳴る
 				if (player1->GetPlayerIsWalking() == true) {
@@ -142,7 +144,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					player1->GetPlayerPosition().y + player1->GetPlayerRadius().y);
 
 
-				FieldInstance[0]->Update();
+				
+
+
+				ScrollSpeed.x = 0.0f;
+				ScrollSpeed.y = 0.0f;
 
 				//フィールドが移動
 				if (player1->GetPlayerDirection() == None) {
@@ -153,6 +159,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				if (player1->GetPlayerDirection() == Right) {
 					if (WorldCoodinate.x >= WINDOW_SIZE_WIDTH / 2.0f &&
 						WorldCoodinate.x <= WINDOW_SIZE_WIDTH + (WINDOW_SIZE_WIDTH / 2.0f)) {
+
+						ScrollSpeed.x = 3.0f;
+						ScrollSpeed.y = 0.0f;
+
+
 						FieldInstance[0]->SetFieldScrollSpeed(-3.0f, 0.0f);
 						player1->SetPlayerSpeed(0.0f, 0.0f);
 						
@@ -161,10 +172,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				}
 
 				
-				
+				WorldScrollAmount.x += ScrollSpeed.x;
+				WorldScrollAmount.y += ScrollSpeed.y;
 
-				WorldCoodinate.x = player1->GetPlayerPosition().x + -(FieldInstance[0]->GetFieldScrollSpeed().x);
-				WorldCoodinate.y = player1->GetPlayerPosition().y + -(FieldInstance[0]->GetFieldScrollSpeed().y);
+				WorldCoodinate.x = player1->GetPlayerPosition().x + WorldScrollAmount.x;
+				WorldCoodinate.y = player1->GetPlayerPosition().y + WorldScrollAmount.y;
 
 
 				break;
@@ -285,6 +297,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				Novice::ScreenPrintf(0, 15, "Player[%f][%f]", player1->GetPlayerPosition().x, player1->GetPlayerPosition().y);
 				Novice::ScreenPrintf(0, 30, "PlayerCenter[%f][%f]", player1->GetPlayerCenterPosition().x, player1->GetPlayerCenterPosition().y);
 				Novice::ScreenPrintf(0, 45, "PlayerDirection[%d]", player1->GetPlayerDirection());
+				Novice::ScreenPrintf(0, 60, "ScrollSpeed[%f][%f]", ScrollSpeed.x, ScrollSpeed.y);
+				Novice::ScreenPrintf(0, 75, "WorldScrollAmount[%f][%f]",WorldScrollAmount.x, WorldScrollAmount.y);
+				
 
 				//None, 0
 				//Front,1
