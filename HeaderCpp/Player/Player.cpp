@@ -24,52 +24,47 @@ Player::~Player() {
 
 
 
-void Player::UpDate(char* keys,int walkingSE,int walkingSEHandle ) {
+void Player::UpDate(char* keys ) {
 
-	
 	//When player's character is walking,soundeffect is played.
 	walkingDirection_ = None;
+	isWalking_ = false;
 	//Back
 	if (keys[DIK_UP] != 0 || keys[DIK_W] != 0) {
 		isWalking_ = true;
 		walkingDirection_ = Back;
 		playerPosition_.y -= playerSpeed_.y;
+		
+
 	}
 	//Front
 	if (keys[DIK_DOWN] != 0 || keys[DIK_S] != 0) {
 		isWalking_ = true;
 		walkingDirection_ = Front;
 		playerPosition_.y += playerSpeed_.y;
+		
+
 	}
 	
 	if (keys[DIK_RIGHT] != 0 || keys[DIK_D] != 0) {
 		isWalking_ = true;
 		walkingDirection_ = Right;
 		playerPosition_.x += playerSpeed_.x;
+		
+
 	}
 	
 	if (keys[DIK_LEFT] != 0 || keys[DIK_A] != 0) {
 		isWalking_ = true;
 		walkingDirection_ = Left;
 		playerPosition_.x -= playerSpeed_.x;
-	}
-
-
-
-	if (isWalking_ == true) {
-
-		//WalkingSE Is Playing!!
-			//BPM120?
-		if (Novice::IsPlayingAudio(walkingSEHandle) == 0 || walkingSEHandle == -1) {
-			walkingSEHandle = Novice::PlayAudio(walkingSE, 1, 0.5f);
-		}
-
+		
 
 	}
 
-	if (isWalking_ == false) {
-		Novice::StopAudio(walkingSEHandle);
-	}
+
+
+
 	
 
 }

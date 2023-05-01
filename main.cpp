@@ -9,6 +9,7 @@
 #include <HeaderCpp/Transparency/Transparency.h>
 #include <HeaderCpp/Object/Object.h>
 #include <HeaderCpp/Player/Player.h>
+#include <HeaderCpp/Object/Field/Field.h>
 
 
 const char kWindowTitle[] = "LE2B_26_モギ_ツバサ_TR1";
@@ -69,29 +70,29 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 	//Playerの位置
-	Vector2 PlayerPosition = { 100,200 };
-	Vector2 PlayerSpeed = { 3,3 };
-	Vector2 PlayerRadius = { 32,32 };
+	Vector2 PlayerPosition = { 100.0f,200.0f };
+	Vector2 PlayerSpeed = { 3.0f,3.0f };
+	Vector2 PlayerRadius = { 32.0f,32.0f };
 
 
 	//World座標
-	Vector2 WorldCoodinate = { 0,0 };
-	Vector2 ScrollSpeed = { 0,0 };
+	Vector2 WorldCoodinate = { 0.0f,0.0f };
+	Vector2 ScrollSpeed = { 0.0f,0.0f };
 
 
 
 	/////クラス
 	//
 	//フィールド
-	Object* Field[4];
-	Field[0] = new Object({ WINDOW_SIZE_WIDTH * 0,WINDOW_SIZE_HEIGHT * 0 });
-	Field[1] = new Object({ WINDOW_SIZE_WIDTH * 1,WINDOW_SIZE_HEIGHT * 0 });
-	Field[2] = new Object({ WINDOW_SIZE_WIDTH * 0,WINDOW_SIZE_HEIGHT * 1 });
-	Field[3] = new Object({ WINDOW_SIZE_WIDTH * 1,WINDOW_SIZE_HEIGHT * 1 });
+	Field* FieldInstance[4];
+	FieldInstance[0] = new Field({ WINDOW_SIZE_WIDTH * 0,WINDOW_SIZE_HEIGHT * 0 }, { 0,0 });
+	FieldInstance[1] = new Field({ WINDOW_SIZE_WIDTH * 1,WINDOW_SIZE_HEIGHT * 0 }, {0,0});
+	FieldInstance[2] = new Field({ WINDOW_SIZE_WIDTH * 0,WINDOW_SIZE_HEIGHT * 1 }, {0,0});
+	FieldInstance[3] = new Field({ WINDOW_SIZE_WIDTH * 1,WINDOW_SIZE_HEIGHT * 1 }, {0,0});
 
 
 	//Player
-	Player* player1 = new Player({ PlayerPosition.x,PlayerPosition.y },{ PlayerSpeed.x,PlayerSpeed .y}, { PlayerRadius.x,PlayerRadius.y });
+	Player* player1 = new Player({ PlayerPosition.x,PlayerPosition.y }, { PlayerSpeed.x,PlayerSpeed.y }, { PlayerRadius.x,PlayerRadius.y });
 
 
 
@@ -115,12 +116,34 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			case Displaying:
 
 
-				player1->UpDate(keys, walkingSE, walkingSEHandle);
+				player1->UpDate(keys);
+
+
+
+				if (player1->GetPlayerIsWalking() == true) {
+					if (Novice::IsPlayingAudio(walkingSEHandle) == 0 || walkingSEHandle == -1) {
+						walkingSEHandle = Novice::PlayAudio(walkingSE, 1, 0.3f);
+					}
+				}
+
+				if (player1->GetPlayerIsWalking() == false) {
+					
+					Novice::StopAudio(walkingSEHandle);
+				}
+
+				
 
 
 
 
+				WorldCoodinate.x = player1->GetPlayerPosition().x + ScrollSpeed.x;
+				WorldCoodinate.y = player1->GetPlayerPosition().y + ScrollSpeed.y;
 
+
+				//フィールドが移動
+				if (player1->GetPlayerPosition().x > WINDOW_SIZE_WIDTH) {
+					ScrollSpeed.x = 3;
+				}
 
 
 
@@ -162,7 +185,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 				//フィールドの描画
 				for (int i = 0; i < 4; i++) {
-					Field[i]->Draw(fieldTexture, fieldTransparency);
+					FieldInstance[i]->Draw(fieldTexture, fieldTransparency);
 
 				}
 				
@@ -240,6 +263,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 				player1->Draw(playerTextureHandleAll, playerTransparency);
 
+				Novice::ScreenPrintf(0, 0, "World[%f][%f]", WorldCoodinate.x, WorldCoodinate.y);
+				Novice::ScreenPrintf(0, 15, "Player[%f][%f]", player1->GetPlayerPosition().x, player1->GetPlayerPosition().y);
 
 
 
@@ -276,7 +301,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	}
 
 	delete player1;
+	for (int i = 0; i < 4; i++) {
+		delete FieldInstance[i];
 
+	}
 	// ライブラリの終了
 	Novice::Finalize();
 	return 0;

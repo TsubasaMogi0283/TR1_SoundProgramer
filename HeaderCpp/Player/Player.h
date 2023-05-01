@@ -12,7 +12,7 @@ public:
 	~Player();
 
 
-	void UpDate(char* keys, int walkingSE,int walkingSEHandle);
+	void UpDate(char* keys);
 
 	void Draw(int textureHandle, unsigned int playerColour);
 
@@ -26,6 +26,10 @@ public:
 
 	int GetPlayerDirection() {
 		return walkingDirection_;
+	}
+
+	bool GetPlayerIsWalking() {
+		return isWalking_;
 	}
 
 	void SetPlayerPosition(float x, float y);

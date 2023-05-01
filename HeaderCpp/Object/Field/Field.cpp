@@ -1,6 +1,7 @@
-#include <HeaderCpp/Object/Object.h>
 #include "Field.h"
 
+#include <HeaderCpp/Object/Object.h>
+#include <HeaderCpp/Player/Player.h>
 
 Field::Field(Vector2 fieldPosition,Vector2 fieldSpeed) {
 	this->objectPosition_.x = fieldPosition.x;
