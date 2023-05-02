@@ -30,6 +30,7 @@ void Field::Update() {
 	objectPosition_.x += objectSpeed_.x;
 	objectPosition_.y += objectSpeed_.y;
 
+	
 
 }
 
@@ -38,6 +39,8 @@ void Field::Draw(int textureHandle, unsigned int objectColour) {
 		int(objectPosition_.x),
 		int(objectPosition_.y),
 		textureHandle, 1.0f, 1.0f, 0.0f, objectColour);
+
+	Novice::ScreenPrintf(600, 0, "objectPosition[%6.02f][%6.02f]", objectPosition_.x, objectPosition_.y);
 }
 
 #pragma region _FieldAccessors

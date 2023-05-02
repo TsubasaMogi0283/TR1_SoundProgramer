@@ -47,8 +47,8 @@ public:
 
 	void SetPlayerCenterPosition(float playerCenterPositionX, float playerCenterPositionY);
 
-	void SetPlayerSpeed(float playerSpeedX, float playerSpeedY);
-
+	void SetPlayerSpeedX(float playerSpeedX);
+	void SetPlayerSpeedY(float playerSpeedY);
 
 
 private:

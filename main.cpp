@@ -138,39 +138,72 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 				
 
-				//プレイヤーの中心の位置
-				player1->SetPlayerCenterPosition(
-					player1->GetPlayerPosition().x + player1->GetPlayerRadius().x,
-					player1->GetPlayerPosition().y + player1->GetPlayerRadius().y);
-
-
 				
-
+				
 
 				ScrollSpeed.x = 0.0f;
 				ScrollSpeed.y = 0.0f;
 
-				//フィールドが移動
-				if (player1->GetPlayerDirection() == None) {
-					FieldInstance[0]->SetFieldScrollSpeed(0.0f, 0.0f);
-				}
 				 
 				//プレイヤーが右に移動したとき
 				if (player1->GetPlayerDirection() == Right) {
-					if (WorldCoodinate.x >= WINDOW_SIZE_WIDTH / 2.0f &&
-						WorldCoodinate.x <= WINDOW_SIZE_WIDTH + (WINDOW_SIZE_WIDTH / 2.0f)) {
 
+
+
+					//この時はまだフィールド動かない
+					ScrollSpeed.x = 0.0f;
+					ScrollSpeed.y = 0.0f;
+					FieldInstance[0]->SetFieldScrollSpeed(0.0f, 0.0f);
+
+
+					if (player1->GetPlayerCenterPosition().x > WINDOW_SIZE_HEIGHT / 2.0f) {
 						ScrollSpeed.x = 3.0f;
-						ScrollSpeed.y = 0.0f;
-
-
+						player1->SetPlayerSpeedX(0.0f);
 						FieldInstance[0]->SetFieldScrollSpeed(-3.0f, 0.0f);
-						player1->SetPlayerSpeed(0.0f, 0.0f);
-						
-
 					}
-				}
 
+				}
+				//プレイヤーが左に移動したとき
+				if (player1->GetPlayerDirection() == Left) {
+
+
+					//この時はまだフィールド動かない
+					ScrollSpeed.x = 0.0f;
+					ScrollSpeed.y = 0.0f;
+					FieldInstance[0]->SetFieldScrollSpeed(0.0f, 0.0f);
+
+
+
+					
+
+				}
+				//プレイヤーが右に移動したとき
+				if (player1->GetPlayerDirection() == Front) {
+
+
+
+					//この時はまだフィールド動かない
+					ScrollSpeed.x = 0.0f;
+					ScrollSpeed.y = 0.0f;
+					FieldInstance[0]->SetFieldScrollSpeed(0.0f, 0.0f);
+
+
+				}
+				//プレイヤーが左に移動したとき
+				if (player1->GetPlayerDirection() == Back) {
+
+
+					//この時はまだフィールド動かない
+					ScrollSpeed.x = 0.0f;
+					ScrollSpeed.y = 0.0f;
+					FieldInstance[0]->SetFieldScrollSpeed(0.0f, 0.0f);
+
+
+
+
+
+				}
+				
 				
 				WorldScrollAmount.x += ScrollSpeed.x;
 				WorldScrollAmount.y += ScrollSpeed.y;
@@ -182,6 +215,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				break;
 
 			}
+
+
+			
+
 
 			break;
 
@@ -295,7 +332,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 				Novice::ScreenPrintf(0, 0, "World[%f][%f]", WorldCoodinate.x, WorldCoodinate.y);
 				Novice::ScreenPrintf(0, 15, "Player[%f][%f]", player1->GetPlayerPosition().x, player1->GetPlayerPosition().y);
-				Novice::ScreenPrintf(0, 30, "PlayerCenter[%f][%f]", player1->GetPlayerCenterPosition().x, player1->GetPlayerCenterPosition().y);
+				
 				Novice::ScreenPrintf(0, 45, "PlayerDirection[%d]", player1->GetPlayerDirection());
 				Novice::ScreenPrintf(0, 60, "ScrollSpeed[%f][%f]", ScrollSpeed.x, ScrollSpeed.y);
 				Novice::ScreenPrintf(0, 75, "WorldScrollAmount[%f][%f]",WorldScrollAmount.x, WorldScrollAmount.y);
