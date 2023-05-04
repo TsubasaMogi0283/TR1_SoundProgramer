@@ -16,11 +16,11 @@ struct Matrix3x3 {
 	float m[3][3];
 };
 
+
 struct FieldCoodinate {
 	Vector2 FieldPosition;
 	Vector2 FieldSpeed;
 };
-
 
 enum PlayerDirection {
 	None,
@@ -36,6 +36,11 @@ enum FieldDirection {
 	FieldBack,
 	FieldRight,
 	FieldLeft,
+};
+
+enum ScrollCondition {
+	NoScroll,
+	Scroll
 };
 
 	

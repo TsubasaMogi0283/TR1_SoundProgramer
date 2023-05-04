@@ -4,12 +4,10 @@
 #include <HeaderCpp/Base/Base.h>
 #include <HeaderCpp/Scene/Scene.h>
 
-
-#include <HeaderCpp/MatrixFunction/MatrixFunction.h>
 #include <HeaderCpp/Transparency/Transparency.h>
 #include <HeaderCpp/Object/Object.h>
-#include <HeaderCpp/Player/Player.h>
-#include <HeaderCpp/Object/Field/Field.h>
+//#include <HeaderCpp/Player/Player.h>
+//#include <HeaderCpp/Object/Field/Field.h>
 
 
 const char kWindowTitle[] = "LE2B_26_モギ_ツバサ_TR1";
@@ -71,8 +69,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	//Player(64x64)の位置
 	Vector2 PlayerPosition = { 100.0f,200.0f };
+	Vector2 PlayerCenterPosition = { 0.0f,0.0f };
 	Vector2 PlayerSpeed = { 3.0f,3.0f };
 	Vector2 PlayerRadius = { 32.0f,32.0f };
+
+
+	bool isWalking=false;
+	int walkingDirection=None;
+	int isScroll = NoScroll;
 
 
 	//World座標
@@ -85,15 +89,20 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	/////クラス
 	//
 	//フィールド
-	Field* FieldInstance[4];
-	FieldInstance[0] = new Field({ WINDOW_SIZE_WIDTH * 0,WINDOW_SIZE_HEIGHT * 0 }, { 0,0 });
-	FieldInstance[1] = new Field({ WINDOW_SIZE_WIDTH * 1,WINDOW_SIZE_HEIGHT * 0 }, {0,0});
-	FieldInstance[2] = new Field({ WINDOW_SIZE_WIDTH * 0,WINDOW_SIZE_HEIGHT * 1 }, {0,0});
-	FieldInstance[3] = new Field({ WINDOW_SIZE_WIDTH * 1,WINDOW_SIZE_HEIGHT * 1 }, {0,0});
+	//Field* FieldInstance[4];
+	//FieldInstance[0] = new Field({ WINDOW_SIZE_WIDTH * 0,WINDOW_SIZE_HEIGHT * 0 }, { 0,0 });
+	//FieldInstance[1] = new Field({ WINDOW_SIZE_WIDTH * 1,WINDOW_SIZE_HEIGHT * 0 }, {0,0});
+	//FieldInstance[2] = new Field({ WINDOW_SIZE_WIDTH * 0,WINDOW_SIZE_HEIGHT * 1 }, {0,0});
+	//FieldInstance[3] = new Field({ WINDOW_SIZE_WIDTH * 1,WINDOW_SIZE_HEIGHT * 1 }, {0,0});
+
+	FieldCoodinate Field1 = { {WINDOW_SIZE_WIDTH * 0,WINDOW_SIZE_HEIGHT * 0 }, { 0.0f,0.0f } };
+	FieldCoodinate Field2 = { {WINDOW_SIZE_WIDTH * 1,WINDOW_SIZE_HEIGHT * 0 }, { 0.0f,0.0f } };
+	FieldCoodinate Field3 = { {WINDOW_SIZE_WIDTH * 0,WINDOW_SIZE_HEIGHT * 1 }, { 0.0f,0.0f } };
+	FieldCoodinate Field4 = { {WINDOW_SIZE_WIDTH * 1,WINDOW_SIZE_HEIGHT * 1 }, { 0.0f,0.0f } };
 
 
 	//Player
-	Player* player1 = new Player({ PlayerPosition.x,PlayerPosition.y }, { PlayerSpeed.x,PlayerSpeed.y }, { PlayerRadius.x,PlayerRadius.y });
+	//Player* player1 = new Player({ PlayerPosition.x,PlayerPosition.y }, { PlayerSpeed.x,PlayerSpeed.y }, { PlayerRadius.x,PlayerRadius.y });
 
 	
 	// ウィンドウの×ボタンが押されるまでループ
@@ -117,18 +126,18 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 				//十字キーで移動
-				player1->UpDate(keys);
+				//player1->UpDate(keys);
 
-				FieldInstance[0]->Update();
+				//FieldInstance[0]->Update();
 
 				//歩く時のSEが鳴る
-				if (player1->GetPlayerIsWalking() == true) {
+				if (isWalking == true) {
 					if (Novice::IsPlayingAudio(walkingSEHandle) == 0 || walkingSEHandle == -1) {
 						walkingSEHandle = Novice::PlayAudio(walkingSE, 1, 0.3f);
 					}
 				}
 				//何も操作していない時は鳴らない
-				if (player1->GetPlayerIsWalking() == false) {
+				if (isWalking == false) {
 					
 					Novice::StopAudio(walkingSEHandle);
 				}
@@ -136,80 +145,139 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				
 				
 
+
+
+				//Back
+				if (keys[DIK_UP] != 0 || keys[DIK_W] != 0) {
+					isWalking = true;
+					walkingDirection= Back;
+				}
+				//Front
+				else if (keys[DIK_DOWN] != 0 || keys[DIK_S] != 0) {
+					isWalking = true;
+					walkingDirection = Front;
+				}
+				//Right
+				else if (keys[DIK_RIGHT] != 0 || keys[DIK_D] != 0) {
+					isWalking = true;
+					walkingDirection = Right;
+				}
+				//Left
+				else if (keys[DIK_LEFT] != 0 || keys[DIK_A] != 0) {
+					isWalking = true;
+					walkingDirection = Left;
+				}
+				//何も押していない時
+				else {
+					walkingDirection = None;
+					isWalking = false;
+				}
+
+
+
+				
+
+
+				
+
+
+
 				
 
 				
-				
+				if (walkingDirection == None) {
+					PlayerSpeed.x = 0.0f;
+					PlayerSpeed.y = 0.0f;
 
-				ScrollSpeed.x = 0.0f;
-				ScrollSpeed.y = 0.0f;
-
-				 
-				//プレイヤーが右に移動したとき
-				if (player1->GetPlayerDirection() == Right) {
-
-
-
-					//この時はまだフィールド動かない
 					ScrollSpeed.x = 0.0f;
 					ScrollSpeed.y = 0.0f;
-					FieldInstance[0]->SetFieldScrollSpeed(0.0f, 0.0f);
-
-
-					if (player1->GetPlayerCenterPosition().x > WINDOW_SIZE_HEIGHT / 2.0f) {
-						ScrollSpeed.x = 3.0f;
-						player1->SetPlayerSpeedX(0.0f);
-						FieldInstance[0]->SetFieldScrollSpeed(-3.0f, 0.0f);
-					}
 
 				}
-				//プレイヤーが左に移動したとき
-				if (player1->GetPlayerDirection() == Left) {
+
+				
 
 
-					//この時はまだフィールド動かない
-					ScrollSpeed.x = 0.0f;
-					ScrollSpeed.y = 0.0f;
-					FieldInstance[0]->SetFieldScrollSpeed(0.0f, 0.0f);
-
-
-
+				//1枚目の半分まで
+				if (WorldCoodinate.x >= 0.0f &&
+					WorldCoodinate.x < (WINDOW_SIZE_WIDTH / 2.0f) - PlayerRadius.x) {
+					Field1.FieldPosition.x = 0.0f;
+					WorldScrollAmount.x = 0.0f;
 					
-
+					//プレイヤーが右に移動したとき
+					if (walkingDirection == Right) {
+						ScrollSpeed.x = 0.0f;
+						PlayerSpeed.x = 3.0f;
+					}
+					//プレイヤーが左に移動したとき
+					if (walkingDirection == Left) {
+						ScrollSpeed.x = 0.0f;
+						PlayerSpeed.x = -3.0f;
+					}
+					
+					
 				}
-				//プレイヤーが右に移動したとき
-				if (player1->GetPlayerDirection() == Front) {
-
-
-
-					//この時はまだフィールド動かない
-					ScrollSpeed.x = 0.0f;
-					ScrollSpeed.y = 0.0f;
-					FieldInstance[0]->SetFieldScrollSpeed(0.0f, 0.0f);
-
-
+				//1枚目の半分から2枚目の半分まで
+				if (WorldCoodinate.x > (WINDOW_SIZE_WIDTH / 2.0f) - PlayerRadius.x &&
+					WorldCoodinate.x < WINDOW_SIZE_WIDTH + (WINDOW_SIZE_WIDTH / 2.0f) - PlayerRadius.x) {
+					//右へ移動
+					if (walkingDirection == Right) {
+						isScroll = Scroll;
+						ScrollSpeed.x = 3.0f;
+						PlayerSpeed.x = 0.0f;
+					}
+					//右へ移動
+					if (walkingDirection == Left) {
+						isScroll = Scroll;
+						ScrollSpeed.x = -3.0f;
+						PlayerSpeed.x = 0.0f;
+					}
 				}
-				//プレイヤーが左に移動したとき
-				if (player1->GetPlayerDirection() == Back) {
-
-
-					//この時はまだフィールド動かない
-					ScrollSpeed.x = 0.0f;
-					ScrollSpeed.y = 0.0f;
-					FieldInstance[0]->SetFieldScrollSpeed(0.0f, 0.0f);
-
-
-
-
-
+				//2枚目の半分から最後まで
+				if (WorldCoodinate.x > WINDOW_SIZE_WIDTH + (WINDOW_SIZE_WIDTH / 2.0f) - PlayerRadius.x &&
+					WorldCoodinate.x < WINDOW_SIZE_WIDTH * 2.0f) {
+					//右へ移動
+					if (walkingDirection == Right) {
+						isScroll = NoScroll;
+						ScrollSpeed.x = 0.0f;
+						PlayerSpeed.x = 3.0f;
+					}
+					//右へ移動
+					if (walkingDirection == Left) {
+						isScroll = NoScroll;
+						ScrollSpeed.x = 0.0f;
+						PlayerSpeed.x = -3.0f;
+					}
 				}
 				
 				
-				WorldScrollAmount.x += ScrollSpeed.x;
-				WorldScrollAmount.y += ScrollSpeed.y;
 
-				WorldCoodinate.x = player1->GetPlayerPosition().x + WorldScrollAmount.x;
-				WorldCoodinate.y = player1->GetPlayerPosition().y + WorldScrollAmount.y;
+				if (WorldCoodinate.x < 0.0f) {
+					WorldCoodinate.x = 0.0f;
+					PlayerPosition.x = 0.0f;
+					
+				}
+				if (PlayerPosition.x > WINDOW_SIZE_WIDTH - PlayerRadius.x * 2.0f) {
+					PlayerPosition.x = WINDOW_SIZE_WIDTH - PlayerRadius.x * 2.0f;
+
+				}
+
+
+
+
+				PlayerPosition.x += PlayerSpeed.x;
+				PlayerPosition.y += PlayerSpeed.y;
+
+				PlayerCenterPosition.x = PlayerPosition.x + PlayerRadius.x;
+				PlayerCenterPosition.y = PlayerPosition.y + PlayerRadius.y;
+				//
+				//Field1.FieldPosition.x += Field1.FieldSpeed.x;
+				//Field1.FieldPosition.y += Field1.FieldSpeed.y;
+				//
+				//
+				WorldScrollAmount.x += ScrollSpeed.x;;
+				//
+				WorldCoodinate.x = PlayerPosition.x + WorldScrollAmount.x;
+				WorldCoodinate.y = PlayerPosition.y + WorldScrollAmount.y;
 
 
 				break;
@@ -252,13 +320,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 				//フィールドの描画
 				for (int i = 0; i < 4; i++) {
-					FieldInstance[i]->Draw(fieldTexture, fieldTransparency);
+					//FieldInstance[i]->Draw(fieldTexture, fieldTransparency);
+
+
+					Novice::DrawSprite(int(Field1.FieldPosition.x - WorldScrollAmount.x), int(Field1.FieldPosition.y), fieldTexture, 1.0f, 1.0f, 0.0f, fieldTransparency);
+					Novice::DrawSprite(int(Field2.FieldPosition.x - WorldScrollAmount.x), int(Field2.FieldPosition.y), fieldTexture, 1.0f, 1.0f, 0.0f, fieldTransparency);
+					Novice::DrawSprite(int(Field3.FieldPosition.x - WorldScrollAmount.x), int(Field3.FieldPosition.y), fieldTexture, 1.0f, 1.0f, 0.0f, fieldTransparency);
+					Novice::DrawSprite(int(Field4.FieldPosition.x - WorldScrollAmount.x), int(Field4.FieldPosition.y), fieldTexture, 1.0f, 1.0f, 0.0f, fieldTransparency);
 
 				}
 				
 				playerTextureChangeTime += 1;
 				//何も操作していない時
-				if (player1->GetPlayerDirection() == None) {
+				if (walkingDirection == None) {
 					if (playerTextureChangeTime > PLAYER_TEXTURE_CHANGE_INTERVAL * 0) {
 						if (playerTextureChangeTime > PLAYER_TEXTURE_CHANGE_INTERVAL * 0 && playerTextureChangeTime <= PLAYER_TEXTURE_CHANGE_INTERVAL * 1) {
 							playerTextureHandleAll = playerFrontTexture[0];
@@ -272,7 +346,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					}
 				}
 				//上
-				if (player1->GetPlayerDirection() == Back) {
+				if (walkingDirection == Back) {
 					if (playerTextureChangeTime > PLAYER_TEXTURE_CHANGE_INTERVAL * 0) {
 						if (playerTextureChangeTime > PLAYER_TEXTURE_CHANGE_INTERVAL * 0 && playerTextureChangeTime <= PLAYER_TEXTURE_CHANGE_INTERVAL * 1) {
 							playerTextureHandleAll = playerBackTexture[0];
@@ -286,7 +360,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					}
 				}
 				//下
-				if (player1->GetPlayerDirection() == Front) {
+				if (walkingDirection == Front) {
 					if (playerTextureChangeTime > PLAYER_TEXTURE_CHANGE_INTERVAL * 0) {
 						if (playerTextureChangeTime > PLAYER_TEXTURE_CHANGE_INTERVAL * 0 && playerTextureChangeTime <= PLAYER_TEXTURE_CHANGE_INTERVAL * 1) {
 							playerTextureHandleAll = playerFrontTexture[0];
@@ -300,7 +374,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					}
 				}
 				//右
-				if (player1->GetPlayerDirection() == Right) {
+				if (walkingDirection == Right) {
 					if (playerTextureChangeTime > PLAYER_TEXTURE_CHANGE_INTERVAL * 0) {
 						if (playerTextureChangeTime > PLAYER_TEXTURE_CHANGE_INTERVAL * 0 && playerTextureChangeTime <= PLAYER_TEXTURE_CHANGE_INTERVAL * 1) {
 							playerTextureHandleAll = playerRightTexture[0];
@@ -314,7 +388,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					}
 				}
 				//左
-				if (player1->GetPlayerDirection() == Left) {
+				if (walkingDirection == Left) {
 					if (playerTextureChangeTime > PLAYER_TEXTURE_CHANGE_INTERVAL * 0) {
 						if (playerTextureChangeTime > PLAYER_TEXTURE_CHANGE_INTERVAL * 0 && playerTextureChangeTime <= PLAYER_TEXTURE_CHANGE_INTERVAL * 1) {
 							playerTextureHandleAll = playerLeftTexture[0];
@@ -328,12 +402,20 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					}
 				}
 
-				player1->Draw(playerTextureHandleAll, playerTransparency);
+				//player1->Draw(playerTextureHandleAll, playerTransparency);
+
+				Novice::DrawSprite(
+					int(PlayerPosition.x),
+					int(PlayerPosition.y),
+					playerTextureHandleAll, 1.0f, 1.0f, 0.0f, playerTransparency);
+
+				
+
 
 				Novice::ScreenPrintf(0, 0, "World[%f][%f]", WorldCoodinate.x, WorldCoodinate.y);
-				Novice::ScreenPrintf(0, 15, "Player[%f][%f]", player1->GetPlayerPosition().x, player1->GetPlayerPosition().y);
-				
-				Novice::ScreenPrintf(0, 45, "PlayerDirection[%d]", player1->GetPlayerDirection());
+				Novice::ScreenPrintf(0, 15, "Player[%f][%f]", PlayerPosition.x, PlayerPosition.y);
+				Novice::ScreenPrintf(0, 30, "PlayerCenter[%f][%f]", PlayerCenterPosition.x, PlayerCenterPosition.y);
+				Novice::ScreenPrintf(0, 45, "PlayerDirection[%d]", walkingDirection);
 				Novice::ScreenPrintf(0, 60, "ScrollSpeed[%f][%f]", ScrollSpeed.x, ScrollSpeed.y);
 				Novice::ScreenPrintf(0, 75, "WorldScrollAmount[%f][%f]",WorldScrollAmount.x, WorldScrollAmount.y);
 				
@@ -377,9 +459,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		}
 	}
 
-	delete player1;
+	//delete player1;
 	for (int i = 0; i < 4; i++) {
-		delete FieldInstance[i];
+		//delete FieldInstance[i];
 
 	}
 	// ライブラリの終了

@@ -62,43 +62,33 @@ void Player::UpDate(char* keys ) {
 	if (keys[DIK_UP] != 0 || keys[DIK_W] != 0) {
 		isWalking_ = true;
 		walkingDirection_ = Back;
+		playerSpeed_.x = 0.0f;
+		playerSpeed_.y = -3.0f;
 	}
 	//Front
 	if (keys[DIK_DOWN] != 0 || keys[DIK_S] != 0) {
 		isWalking_ = true;
 		walkingDirection_ = Front;
+		playerSpeed_.x = 0.0f;
+		playerSpeed_.y = 3.0f;
 	}
 	//Right
 	if (keys[DIK_RIGHT] != 0 || keys[DIK_D] != 0) {
 		isWalking_ = true;
 		walkingDirection_ = Right;
+		playerSpeed_.x = 3.0f;
+		playerSpeed_.y = 0.0f;
 	}
 	
 	if (keys[DIK_LEFT] != 0 || keys[DIK_A] != 0) {
 		isWalking_ = true;
 		walkingDirection_ = Left;
+		playerSpeed_.x = -3.0f;
+		playerSpeed_.y = 0.0f;
 	}
 
 
-	if (isWalking_ == true) {
-		if (walkingDirection_ == Back) {
-			playerSpeed_.x = 0.0f;
-			playerSpeed_.y = -3.0f;
-		}
-		if (walkingDirection_ == Front) {
-			playerSpeed_.x = 0.0f;
-			playerSpeed_.y = 3.0f;
-		}
-		if (walkingDirection_ == Right) {
-			playerSpeed_.x = 3.0f;
-			playerSpeed_.y = 0.0f;
-		}
-		if (walkingDirection_ == Left) {
-			playerSpeed_.x = -3.0f;
-			playerSpeed_.y = 0.0f;
-		}
-
-	}
+	
 
 	if (isWalking_ == false) {
 		playerSpeed_.x = 0.0f;
