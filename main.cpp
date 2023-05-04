@@ -1,6 +1,7 @@
 #include <Novice.h>
 
 #include <Vector2.h>
+#include <cmath>
 #include <HeaderCpp/Base/Base.h>
 #include <HeaderCpp/Scene/Scene.h>
 
@@ -55,7 +56,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 	//Event
-	//int waterFallTexture = Novice::LoadTexture("./Resources/Event/WaterFall.png");
+	int waterFallTexture = Novice::LoadTexture("./Resources/Event/WaterFall.png");
 
 
 #pragma endregion
@@ -84,6 +85,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Vector2 PlayerPosition = { 100.0f,200.0f };
 	Vector2 PlayerCenterPosition = { 0.0f,0.0f };
 	Vector2 PlayerSpeed = { 3.0f,3.0f };
+	Vector2 NewPlayerSpeed = { 0.0f,0.0f };
+	Vector2 NewPlayerSpeedVelocity = { 3.0f,3.0f };
 	Vector2 PlayerRadius = { 32.0f,32.0f };
 
 
@@ -97,6 +100,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Vector2 WorldField1Coodinate = { 0.0f,0.0f };
 	Vector2 WorldScrollAmount = { 0.0f,0.0f };
 	Vector2 ScrollSpeed = { 0.0f,0.0f };
+
+
+
+	//Object
+	//256x256
+	Vector2 WaterFallRadius = { 128.0f,128.0f };
+	Vector2 WaterFallCoodinate = { (WINDOW_SIZE_WIDTH * 2.0f)- (WaterFallRadius.x * 2.0f),0.0 };
+	Vector2 WaterFallCollisionRadius = { 0.0f,0.0f };
 
 
 
@@ -267,7 +278,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				}
 				//2枚目の半分から最後まで
 				if (WorldPlayerCoodinate.x > WINDOW_SIZE_WIDTH + (WINDOW_SIZE_WIDTH / 2.0f) - PlayerRadius.x &&
-					WorldPlayerCoodinate.x < WINDOW_SIZE_WIDTH * 2.0f) {
+					WorldPlayerCoodinate.x < WINDOW_SIZE_WIDTH * 2.0f - PlayerRadius.x* 2.0f) {
+					
+					
 					//右へ移動
 					if (walkingDirection == Right) {
 						isScroll = NoScroll;
@@ -301,16 +314,28 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					PlayerPosition.x = 0.0f;
 					
 				}
-				if (PlayerPosition.x > WINDOW_SIZE_WIDTH - PlayerRadius.x * 2.0f) {
+				if (WorldPlayerCoodinate.x > WINDOW_SIZE_WIDTH * 2.0f - PlayerRadius.x * 2.0f) {
+					WorldPlayerCoodinate.x = WINDOW_SIZE_WIDTH * 2.0f - PlayerRadius.x * 2.0f;
 					PlayerPosition.x = WINDOW_SIZE_WIDTH - PlayerRadius.x * 2.0f;
 
 				}
 
+				float length = sqrtf(PlayerSpeed.x * PlayerSpeed.x + PlayerSpeed.y * PlayerSpeed.y);
+
+				NewPlayerSpeed.x = PlayerSpeed.x;
+				NewPlayerSpeed.y = PlayerSpeed.y;
+
+				if (length != 0.0f) {
+					NewPlayerSpeed.x = PlayerSpeed.x / length;
+					NewPlayerSpeed.y = PlayerSpeed.y / length;
+
+				}
+
+				
 
 
-
-				PlayerPosition.x += PlayerSpeed.x;
-				PlayerPosition.y += PlayerSpeed.y;
+				PlayerPosition.x += NewPlayerSpeed.x*NewPlayerSpeedVelocity.x;
+				PlayerPosition.y += NewPlayerSpeed.y*NewPlayerSpeedVelocity.y;
 
 				PlayerCenterPosition.x = PlayerPosition.x + PlayerRadius.x;
 				PlayerCenterPosition.y = PlayerPosition.y + PlayerRadius.y;
@@ -462,10 +487,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					playerTextureHandleAll, 1.0f, 1.0f, 0.0f, playerTransparency);
 
 				
-				//Novice::DrawSprite(
-				//	int(), 
-				//	int(), 
-				//	waterFallTexture, 1.0f, 1.0f, 0.0f, Transparency100);
+				Novice::DrawSprite(
+					int(WaterFallCoodinate.x - WorldScrollAmount.x),
+					int(WaterFallCoodinate.y - WorldScrollAmount.y),
+					waterFallTexture, 1.0f, 1.0f, 0.0f, Transparency100);
 
 
 
