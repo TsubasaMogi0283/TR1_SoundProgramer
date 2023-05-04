@@ -70,8 +70,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	int ambientWindSE = Novice::LoadAudio("./Resources/Music/SE/Ambient/Ambient_WeakWind.wav");
 
 
-	//int waterFallSEHandle = -1;
-	//int waterFallSE = Novice::LoadAudio("./Resources/Music/SE/Ambient/Cymatics_LIFE_River_Heavy_4.wav");
+	int waterFallSEHandle = -1;
+	int waterFallSE = Novice::LoadAudio("./Resources/Music/SE/Ambient/Cymatics_LIFE_Waterfall_3.wav");
 
 
 #pragma endregion
@@ -106,8 +106,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//Object
 	//256x256
 	Vector2 WaterFallRadius = { 128.0f,128.0f };
-	Vector2 WaterFallCoodinate = { (WINDOW_SIZE_WIDTH * 2.0f)- (WaterFallRadius.x * 2.0f),0.0 };
+	Vector2 WaterFallCoodinate = { (WINDOW_SIZE_WIDTH * 2.0f)- (WaterFallRadius.x * 2.0f),0.0f };
+	Vector2 WaterFallNewCoodinate = { 0.0f,0.0f };
+	Vector2 WaterFallCoodinateCenter = { 0.0f,0.0f };
 	Vector2 WaterFallCollisionRadius = { 0.0f,0.0f };
+	float waterFallCollisionDistance = 0.0f;
 
 
 
@@ -199,10 +202,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 
-				//環境音
-				if (Novice::IsPlayingAudio(ambientWindSEHandle) == 0 || ambientWindSEHandle == -1) {
-					ambientWindSEHandle = Novice::PlayAudio(ambientWindSE, 1, 0.6f);
-				}
+				
 
 				
 				if (walkingDirection == None) {
@@ -307,6 +307,34 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					}
 				}
 				
+				//イベント
+
+				//環境音
+				if (Novice::IsPlayingAudio(ambientWindSEHandle) == 0 || ambientWindSEHandle == -1) {
+					ambientWindSEHandle = Novice::PlayAudio(ambientWindSE, 1, 0.6f);
+				}
+
+				//滝
+				if (Novice::IsPlayingAudio(waterFallSEHandle) == 0 || waterFallSEHandle == -1) {
+					waterFallSEHandle = Novice::PlayAudio(waterFallSE, 1, 0.0f);
+				}
+				//間近
+				if (waterFallCollisionDistance < PlayerRadius.x + WaterFallRadius.x) {
+					Novice::SetAudioVolume(waterFallSEHandle, 0.6f);
+
+				}
+				//少し離れる
+				if (waterFallCollisionDistance >= PlayerRadius.x + WaterFallRadius.x &&
+					waterFallCollisionDistance < 300.0f) {
+					Novice::SetAudioVolume(waterFallSEHandle, 0.3f);
+
+				}
+				//遠い
+				if (waterFallCollisionDistance >= 300.0f) {
+					Novice::SetAudioVolume(waterFallSEHandle, 0.0f);
+
+				}
+
 				
 
 				if (WorldPlayerCoodinate.x < 0.0f) {
@@ -320,6 +348,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 				}
 
+#pragma region プレイヤー移動の正規化
+
 				float length = sqrtf(PlayerSpeed.x * PlayerSpeed.x + PlayerSpeed.y * PlayerSpeed.y);
 
 				NewPlayerSpeed.x = PlayerSpeed.x;
@@ -331,7 +361,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 				}
 
-				
+#pragma endregion
 
 
 				PlayerPosition.x += NewPlayerSpeed.x*NewPlayerSpeedVelocity.x;
@@ -355,6 +385,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				WorldField1Coodinate.x = Field1.FieldPosition.x - WorldScrollAmount.x;
 
 
+				//滝
+				WaterFallNewCoodinate.x = WaterFallCoodinate.x - WorldScrollAmount.x;
+				WaterFallNewCoodinate.y = WaterFallCoodinate.y - WorldScrollAmount.y;
+
+				WaterFallCoodinateCenter.x = WaterFallNewCoodinate.x + WaterFallRadius.x;
+				WaterFallCoodinateCenter.y = WaterFallNewCoodinate.y + WaterFallRadius.y;
+
+				//当たり判定
+				WaterFallCollisionRadius.x = WaterFallCoodinateCenter.x - PlayerCenterPosition.x;
+				WaterFallCollisionRadius.y = WaterFallCoodinateCenter.y - PlayerCenterPosition.y;
+				waterFallCollisionDistance = sqrtf(WaterFallCollisionRadius.x * WaterFallCollisionRadius.x + WaterFallCollisionRadius.y * WaterFallCollisionRadius.y);
 
 
 				break;
@@ -486,11 +527,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					int(PlayerPosition.y),
 					playerTextureHandleAll, 1.0f, 1.0f, 0.0f, playerTransparency);
 
-				
+				//滝
 				Novice::DrawSprite(
-					int(WaterFallCoodinate.x - WorldScrollAmount.x),
-					int(WaterFallCoodinate.y - WorldScrollAmount.y),
+					int(WaterFallNewCoodinate.x),
+					int(WaterFallNewCoodinate.y),
 					waterFallTexture, 1.0f, 1.0f, 0.0f, Transparency100);
+				Novice::DrawEllipse(
+					int (WaterFallCoodinateCenter.x), 
+					int (WaterFallCoodinateCenter.y), 
+					int (WaterFallRadius.x), 
+					int (WaterFallRadius.y), 0.0f, RED, kFillModeWireFrame);
+
 
 
 
@@ -500,13 +547,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				Novice::ScreenPrintf(0, 45, "PlayerDirection[%d]", walkingDirection);
 				Novice::ScreenPrintf(0, 60, "ScrollSpeed[%f][%f]", ScrollSpeed.x, ScrollSpeed.y);
 				Novice::ScreenPrintf(0, 75, "WorldScrollAmount[%f][%f]",WorldScrollAmount.x, WorldScrollAmount.y);
-				
+				Novice::ScreenPrintf(0, 90, "WaterFallDistance[%f]", waterFallCollisionDistance);
 
-				//None, 0
-				//Front,1
-				//Back, 2
-				//Right,3
-				//Left, 4
 
 
 				break;
