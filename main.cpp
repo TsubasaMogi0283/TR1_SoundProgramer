@@ -158,18 +158,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 				//FieldInstance[0]->Update();
 
-				//歩く時のSEが鳴る
-				if (isWalking == true) {
-					if (Novice::IsPlayingAudio(walkingSEHandle) == 0 || walkingSEHandle == -1) {
-						walkingSEHandle = Novice::PlayAudio(walkingSE, 1, 0.3f);
-					}
-				}
-				//何も操作していない時は鳴らない
-				if (isWalking == false) {
-					
-					Novice::StopAudio(walkingSEHandle);
-				}
-
+				
 
 #pragma region 操作
 				//Back
@@ -307,6 +296,21 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					}
 				}
 				
+
+
+				if (WorldPlayerCoodinate.x < 0.0f) {
+					WorldPlayerCoodinate.x = 0.0f;
+					PlayerPosition.x = 0.0f;
+
+				}
+				if (WorldPlayerCoodinate.x > WINDOW_SIZE_WIDTH * 2.0f - PlayerRadius.x * 2.0f) {
+					WorldPlayerCoodinate.x = WINDOW_SIZE_WIDTH * 2.0f - PlayerRadius.x * 2.0f;
+					PlayerPosition.x = WINDOW_SIZE_WIDTH - PlayerRadius.x * 2.0f;
+
+				}
+
+
+
 				//イベント
 
 				//環境音
@@ -314,6 +318,20 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					ambientWindSEHandle = Novice::PlayAudio(ambientWindSE, 1, 0.6f);
 				}
 
+				//歩く時のSEが鳴る
+				if (isWalking == true) {
+					if (Novice::IsPlayingAudio(walkingSEHandle) == 0 || walkingSEHandle == -1) {
+						walkingSEHandle = Novice::PlayAudio(walkingSE, 1, 0.3f);
+					}
+				}
+				//何も操作していない時は鳴らない
+				if (isWalking == false) {
+
+					Novice::StopAudio(walkingSEHandle);
+				}
+
+
+#pragma region 滝の環境音
 				//滝
 				if (Novice::IsPlayingAudio(waterFallSEHandle) == 0 || waterFallSEHandle == -1) {
 					waterFallSEHandle = Novice::PlayAudio(waterFallSE, 1, 0.0f);
@@ -334,19 +352,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					Novice::SetAudioVolume(waterFallSEHandle, 0.0f);
 
 				}
+#pragma endregion
 
-				
-
-				if (WorldPlayerCoodinate.x < 0.0f) {
-					WorldPlayerCoodinate.x = 0.0f;
-					PlayerPosition.x = 0.0f;
-					
-				}
-				if (WorldPlayerCoodinate.x > WINDOW_SIZE_WIDTH * 2.0f - PlayerRadius.x * 2.0f) {
-					WorldPlayerCoodinate.x = WINDOW_SIZE_WIDTH * 2.0f - PlayerRadius.x * 2.0f;
-					PlayerPosition.x = WINDOW_SIZE_WIDTH - PlayerRadius.x * 2.0f;
-
-				}
 
 #pragma region プレイヤー移動の正規化
 
