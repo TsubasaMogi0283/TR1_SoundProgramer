@@ -60,7 +60,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//Event
 	int waterFallTexture = Novice::LoadTexture("./Resources/Event/WaterFall.png");
 	int riverTexture = Novice::LoadTexture("./Resources/Event/River.png");
-
+	//int forestTreeTexture = Novice::LoadTexture("./Resources/Event/ForestTree.png");
 
 #pragma endregion
 
@@ -135,12 +135,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Vector2 RiverVectorBA = { 0.0f,0.0f };
 	Vector2 RiverDistance = { 0.0f,0.0f };
 	float riverDistance = 0.0f;
-	const float RIVER_INTERVAL = 50.0f;
+	const float RIVER_INTERVAL = 30.0f;
 
 	Vector2 RiverCoodinate = { 0.0f,0.0f };
 	Vector2 RiverNewCoodinate = { 0.0f,0.0f };
 
 	
+
+	//森(何個か出す)128x128
+	Vector2 ForestTreeRadius = { 64.0f,64.0f };
+	Vector2 ForestTreeCoodinate = { 700,ForestTreeRadius.y };
+
 	
 
 	/////クラス
@@ -190,7 +195,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				//歩く時のSEが鳴る
 				if (isWalking == true) {
 					if (Novice::IsPlayingAudio(walkingSEHandle) == 0 || walkingSEHandle == -1) {
-						walkingSEHandle = Novice::PlayAudio(walkingSE, 1, 0.3f);
+						walkingSEHandle = Novice::PlayAudio(walkingSE, 1, 0.2f);
 					}
 				}
 				//何も操作していない時は鳴らない
@@ -388,8 +393,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 						waterFallCollisionDistance < PlayerRadius.x + WaterFallRadius.x + WATERFALL_INTERVAL * 1.0f) {
 						Novice::SetAudioVolume(waterFallSEHandle, 0.7f);
 					}
-
-
 					if (waterFallCollisionDistance >= PlayerRadius.x + WaterFallRadius.x + WATERFALL_INTERVAL * 1.0f &&
 						waterFallCollisionDistance < PlayerRadius.x + WaterFallRadius.x + WATERFALL_INTERVAL * 2.0f) {
 						Novice::SetAudioVolume(waterFallSEHandle, 0.65f);
@@ -496,11 +499,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				//何か良い方法ないかな
 				if (riverDistance >= PlayerRadius.x + RiverCapsuleRadius.x + RIVER_INTERVAL * 0.0f &&
 					riverDistance < PlayerRadius.x + RiverCapsuleRadius.x + RIVER_INTERVAL * 1.0f) {
-					Novice::SetAudioVolume(riverSEHandle, 0.7f);
+					Novice::SetAudioVolume(riverSEHandle, 0.65f);
 				}
 				else if (riverDistance >= PlayerRadius.x + RiverCapsuleRadius.x + RIVER_INTERVAL * 1.0f &&
 					riverDistance < PlayerRadius.x + RiverCapsuleRadius.x + RIVER_INTERVAL * 2.0f) {
-					Novice::SetAudioVolume(riverSEHandle, 0.65f);
+					Novice::SetAudioVolume(riverSEHandle, 0.62f);
 				}
 				else if (riverDistance >= PlayerRadius.x + RiverCapsuleRadius.x + RIVER_INTERVAL * 2.0f &&
 					riverDistance < PlayerRadius.x + RiverCapsuleRadius.x + RIVER_INTERVAL * 3.0f) {
@@ -550,7 +553,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					riverDistance < PlayerRadius.x + RiverCapsuleRadius.x + RIVER_INTERVAL * 14.0f) {
 					Novice::SetAudioVolume(riverSEHandle, 0.03f);
 				}
-				else{
+				else if(riverDistance >= PlayerRadius.x + RiverCapsuleRadius.x + RIVER_INTERVAL * 14.0f){
 					Novice::SetAudioVolume(riverSEHandle, 0.0f);
 				}
 
@@ -688,6 +691,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					int(PlayerCenterPosition.y), 
 					int(RiverVectorF.x - WorldScrollAmount.x),
 					int(RiverVectorF.y - WorldScrollAmount.y), WHITE);
+
+
+				Novice::ScreenPrintf(0, 105, "riverDistance:[%f]", riverDistance);
 
 #pragma endregion
 
